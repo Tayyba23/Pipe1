@@ -1,0 +1,57 @@
+USING CHARACTER SET UTF8
+DEFINE JOB LOAD_JOB
+DESCRIPTION 'Loading from file into staging table account'
+(
+	DEFINE SCHEMA account_Schema
+	(
+	        Acct_Nbr VARCHAR(16) ,
+      Cust_Id VARCHAR(20) ,
+      Acct_Type VARCHAR(10) ,
+      Account_Active VARCHAR(10) ,
+      Acct_Start_Date VARCHAR(10) ,
+      Acct_End_Date VARCHAR(10) ,
+      Starting_Balance VARCHAR(8) ,
+      Ending_Balance VARCHAR(30) ,
+      Start_Ts VARCHAR(30),
+      End_Ts VARCHAR(30),
+      Start_Date VARCHAR(30),
+      End_Date VARCHAR(30),
+      Record_Deleted_Flag VARCHAR(30),
+      Ctl_Id  VARCHAR(30) ,
+      File_Id  VARCHAR(30),
+      Process_Name VARCHAR(30) ,
+      Process_Id VARCHAR(10),
+      Update_Process_Name VARCHAR(30),
+      Update_Process_Id VARCHAR(20)
+);
+	
+	DEFINE OPERATOR File_Reader
+	TYPE DATACONNECTOR PRODUCER
+	SCHEMA account_Schema
+	ATTRIBUTES
+	(
+		VARCHAR DirectoryPath = '.',
+		VARCHAR FileName = 'accts.csv',
+		VARCHAR FORMAT = 'DELIMITED',
+		VARCHAR TextDelimiter = ',',
+		VARCHAR OpenMode = 'READ'
+	);
+	
+	DEFINE OPERATOR Load_accts  
+	TYPE LOAD	
+	SCHEMA account_Schema
+	ATTRIBUTES 
+	(	
+		VARCHAR UserName = 'dbc', 
+		VARCHAR UserPassword = 'dbc',
+		VARCHAR Tdpid = '192.168.74.134',
+		VARCHAR	TargetTable = 'GDEV1T_STG.accs',
+		VARCHAR LogTable = 'GDEV1T_STG.accs_log_',
+		VARCHAR DateForm='AnsiDate'
+	);
+	APPLY 'INSERT INTO GDEV1T_STG.accs  (Acct_Nbr, Cust_Id, Acct_Type, Account_Active, Acct_Start_Date, Acct_End_Date, Starting_Balance, Ending_Balance, Start_Ts, End_Ts, Start_Date, End_Date, Record_Deleted_Flag, Ctl_Id, File_Id, Process_Name, Process_Id, Update_Process_Name, Update_Process_Id)  VALUES (:Acct_Nbr,:Cust_Id,:Acct_Type,:Account_Active,:Acct_Start_Date,:Acct_End_Date,:Starting_Balance,:Ending_Balance,:Start_Ts,:End_Ts,:Start_Date,:End_Date,:Record_Deleted_Flag,:Ctl_Id,:File_Id,:Process_Name,:Process_Id,:Update_Process_Name,:Update_Process_Id);'
+	TO OPERATOR (Load_accts[1])
+	
+	SELECT  Acct_Nbr, Cust_Id, Acct_Type, Account_Active, Acct_Start_Date, Acct_End_Date, Starting_Balance, Ending_Balance, Start_Ts, End_Ts, Start_Date, End_Date, Record_Deleted_Flag, Ctl_Id, File_Id, Process_Name, Process_Id, Update_Process_Name, Update_Process_Id
+	FROM OPERATOR (File_Reader[1]);
+);

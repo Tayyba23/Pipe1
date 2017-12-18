@@ -1,0 +1,59 @@
+USING CHARACTER SET UTF8
+DEFINE JOB LOAD_JOB
+DESCRIPTION 'Loading from file into staging table transaction'
+(
+	DEFINE SCHEMA transaction_Schema
+	(
+	  tran_id VARCHAR(20) ,
+      acct_nbr VARCHAR(16) ,
+      tran_amt VARCHAR(30) ,
+      principal_amt VARCHAR(30),
+      interest_amt VARCHAR(30),
+      new_balance VARCHAR(30),
+      tran_date VARCHAR(14),
+      tran_time VARCHAR(20),
+      channel VARCHAR(10) ,
+      tran_code VARCHAR(10),
+      Start_Ts VARCHAR(50),
+      End_Ts VARCHAR(50),
+      Start_Date VARCHAR(30),
+      End_Date VARCHAR(30) ,
+      Record_Deleted_Flag VARCHAR(3),
+      Ctl_Id VARCHAR(16),
+      File_Id VARCHAR(16) ,
+      Process_Name VARCHAR(30),
+      Process_Id VARCHAR(16),
+      Update_Process_Name VARCHAR(30),
+      Update_Process_Id VARCHAR(16)
+);
+	
+	DEFINE OPERATOR File_Reader
+	TYPE DATACONNECTOR PRODUCER
+	SCHEMA transaction_Schema
+	ATTRIBUTES
+	(
+		VARCHAR DirectoryPath = '.',
+		VARCHAR FileName = 'transactions_.csv',
+		VARCHAR FORMAT = 'DELIMITED',
+		VARCHAR TextDelimiter = ',',
+		VARCHAR OpenMode = 'READ'
+	);
+	
+	DEFINE OPERATOR Load_Transactions  
+	TYPE LOAD	
+	SCHEMA transaction_Schema
+	ATTRIBUTES 
+	(	
+		VARCHAR UserName = 'dbc', 
+		VARCHAR UserPassword = 'dbc',
+		VARCHAR Tdpid = '192.168.74.134',
+		VARCHAR	TargetTable = 'GDEV1T_STG.TRANS_',
+		VARCHAR LogTable = 'GDEV1T_STG.TRAN_log_',
+		VARCHAR DateForm='AnsiDate'
+	);
+	APPLY 'INSERT INTO GDEV1T_STG.TRANS_  (tran_id, acct_nbr, tran_amt, principal_amt, interest_amt, new_balance, tran_date, tran_time, channel, tran_code, Start_Ts, End_Ts, Start_Date, End_Date, Record_Deleted_Flag, Ctl_Id, File_Id, Process_Name, Process_Id, Update_Process_Name, Update_Process_Id)  VALUES (:tran_id,:acct_nbr,:tran_amt,:principal_amt,:interest_amt,:new_balance,:tran_date,:tran_time,:channel,:tran_code,:Start_Ts,:End_Ts,:Start_Date,:End_Date,:Record_Deleted_Flag,:Ctl_Id,:File_Id,:Process_Name,:Process_Id,:Update_Process_Name,:Update_Process_Id );'
+	TO OPERATOR (Load_Transactions[1])
+	
+	SELECT  tran_id, acct_nbr, tran_amt, principal_amt, interest_amt, new_balance, tran_date, tran_time, channel, tran_code, Start_Ts, End_Ts, Start_Date, End_Date, Record_Deleted_Flag, Ctl_Id, File_Id, Process_Name, Process_Id, Update_Process_Name, Update_Process_Id
+	FROM OPERATOR (File_Reader[1]);
+);

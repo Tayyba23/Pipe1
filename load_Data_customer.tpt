@@ -1,0 +1,64 @@
+USING CHARACTER SET UTF8
+DEFINE JOB LOAD_JOB
+DESCRIPTION 'Loading from file into staging table customer'
+(
+	DEFINE SCHEMA Customer_Schema
+	(
+	  Cust_Id VARCHAR(10),
+      Income VARCHAR(20),
+      Date_Of_Birth VARCHAR(20),
+      Date_Joined_Bank VARCHAR(20),
+      Nbr_Children VARCHAR(20) ,
+      Gender VARCHAR(5) ,
+      Marital_Status VARCHAR(10) ,
+      Name_Prefix VARCHAR(10) ,
+      First_Name VARCHAR(30) ,
+      Last_Name VARCHAR(30) ,
+      Street_Nbr VARCHAR(10) ,
+      Street_Name VARCHAR(30) ,
+      Postal_Code VARCHAR(10) ,
+      City_Name VARCHAR(20) ,
+      State_Code VARCHAR(10) ,
+      Start_Ts  VARCHAR(40) ,
+      End_Ts VARCHAR(40),
+      Start_Date VARCHAR(12) ,
+      End_Date VARCHAR(12) ,
+      Record_Deleted_Flag VARCHAR(12),
+      Ctl_Id VARCHAR(12) ,
+      File_Id VARCHAR(12) ,
+      Process_Name VARCHAR(30) ,
+      Process_Id VARCHAR(50) ,
+      Update_Process_Name VARCHAR(30) ,
+      Update_Process_Id VARCHAR(30)
+	);
+	
+	DEFINE OPERATOR File_Reader
+	TYPE DATACONNECTOR PRODUCER
+	SCHEMA Customer_Schema
+	ATTRIBUTES
+	(
+		VARCHAR DirectoryPath = '.',
+		VARCHAR FileName = 'customer.csv',
+		VARCHAR FORMAT = 'DELIMITED',
+		VARCHAR TextDelimiter = ',',
+		VARCHAR OpenMode = 'READ'
+	);
+	
+	DEFINE OPERATOR Load_Customer   
+	TYPE LOAD	
+	SCHEMA Customer_Schema
+	ATTRIBUTES 
+	(	
+		VARCHAR UserName = 'dbc', 
+		VARCHAR UserPassword = 'dbc',
+		VARCHAR Tdpid = '192.168.74.134',
+		VARCHAR	TargetTable = 'GDEV1T_STG.Cust_',
+		VARCHAR LogTable = 'GDEV1T_STG.CUSTOMER_log_tbl',
+		VARCHAR DateForm='AnsiDate'
+	);
+	APPLY 'INSERT INTO GDEV1T_STG.Cust_  (Cust_Id, Income, Date_Of_Birth, Date_Joined_Bank, Nbr_Children, Gender, Marital_Status, Name_Prefix, First_Name, Last_Name, Street_Nbr, Street_Name, Postal_Code, City_Name, State_Code, Start_Ts, End_Ts, Start_Date, End_Date, Record_Deleted_Flag, Ctl_Id, File_Id, Process_Name, Process_Id, Update_Process_Name, Update_Process_Id)  VALUES(:Cust_Id ,:Income,:Date_Of_Birth ,:Date_Joined_Bank,:Nbr_Children,:Gender,:Marital_Status,:Name_Prefix,:First_Name,:Last_Name,:Street_Nbr,:Street_Name,:Postal_Code,:City_Name,:State_Code,:Start_Ts,:End_Ts,:Start_Date,:End_Date,:Record_Deleted_Flag,:Ctl_Id,:File_Id,:Process_Name,:Process_Id,:Update_Process_Name,:Update_Process_Id ) ;'
+	TO OPERATOR (Load_Customer[1])
+	
+	SELECT Cust_Id, Income, Date_Of_Birth, Date_Joined_Bank, Nbr_Children, Gender, Marital_Status, Name_Prefix, First_Name, Last_Name, Street_Nbr, Street_Name, Postal_Code, City_Name, State_Code, Start_Ts, End_Ts, Start_Date, End_Date, Record_Deleted_Flag, Ctl_Id, File_Id, Process_Name, Process_Id, Update_Process_Name, Update_Process_Id
+	FROM OPERATOR (File_Reader[1]);
+);
