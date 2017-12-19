@@ -9,8 +9,7 @@ node {
 	   try {        
 			
 		
-			bat "tbuild -f load_Data_customer.tpt > loadDataCustomerStage_Log.txt"
-			echo %ERRORLEVEL%
+			bat "test.bat"
 			def logX = readFile "${env.WORKSPACE}/loadDataCustomerStage_Log.txt"
 				
 			if(logX == '')
