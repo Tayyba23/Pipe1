@@ -9,7 +9,8 @@ node {
 	   try {        
 			
 		
-		bat "test.bat"
+			bat "tbuild -f load_Data_customer.tpt > loadDataCustomerStage_Log.txt"
+			echo %ERRORLEVEL%
 			}
 		catch(err){
 			echo "Error exists in  Git load_Data_Customer Script, Marking build as unstable"
