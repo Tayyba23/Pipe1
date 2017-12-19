@@ -10,6 +10,7 @@ node {
 			
 		
 			bat "tbuild -f load_Data_customer.tpt > loadDataCustomerStage_Log.txt"
+			bat "echo %ERRORLEVEL%"
 			def logX = readFile "${env.WORKSPACE}/loadDataCustomerStage_Log.txt"
 				
 			if(logX == '')
