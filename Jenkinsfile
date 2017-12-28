@@ -10,7 +10,6 @@ node {
 				
 			bat "load_customer.bat"
 			def logCust = readFile "${env.WORKSPACE}/load_customer_error.txt"
-			def success=0
 			echo logCust
 			if (logCust.contains('0')) {
 			
@@ -29,7 +28,7 @@ node {
 	   try{
 			bat "load_account.bat"
 			def logCust = readFile "${env.WORKSPACE}/load_account_error.txt"
-			if(logCust == '0')
+			if(logCust.contains('0'))
 					echo " No Error log generated for script Load Account"
 			else
 					throw err				
@@ -43,7 +42,7 @@ node {
 		  try{
 			bat "load_transaction.bat"
 			def logCust = readFile "${env.WORKSPACE}/load_transaction_error.txt"
-		if(logCust == '0')
+		if(logCust.contains('0'))
 					echo " No Error log generated for script Load Account"
 		else
 					throw err				
