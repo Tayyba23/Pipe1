@@ -8,7 +8,7 @@ node {
 	   try {        
 				
 			bat "load_customer.bat"
-			def logCust = readFile "${env.WORKSPACE}/load_customer_error.txt
+			def logCust = readFile "${env.WORKSPACE}/load_customer_error.txt"
 			if(logCust == '')
 					echo " No Error log generated for script Load Customer"
 			else
@@ -23,7 +23,7 @@ node {
        stage ('Loading Account Data') {	
 	   
 			bat "load_account.bat"
-			def logCust = readFile "${env.WORKSPACE}/load_account_error.txt
+			def logCust = readFile "${env.WORKSPACE}/load_account_error.txt"
 			if(logCust == '')
 					echo " No Error log generated for script Load Account"
 			else
@@ -36,7 +36,7 @@ node {
         }
         stage ('Loading Transaction Data') {
 			bat "load_transaction.bat"
-			def logCust = readFile "${env.WORKSPACE}/load_transaction_error.txt
+			def logCust = readFile "${env.WORKSPACE}/load_transaction_error.txt"
 		if(logCust == '')
 					echo " No Error log generated for script Load Account"
 		else
