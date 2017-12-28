@@ -21,27 +21,28 @@ node {
         
         }
        stage ('Loading Account Data') {	
-	   
+	   try{
 			bat "load_account.bat"
 			def logCust = readFile "${env.WORKSPACE}/load_account_error.txt"
 			if(logCust == '')
 					echo " No Error log generated for script Load Account"
 			else
 					throw err				
-			
+			}
 		catch(err){
 			echo "Error exists in  Git load_data_account Script, Marking build as unstable"
 			currentBuild.result = "UNSTABLE"
 					   }          
         }
         stage ('Loading Transaction Data') {
+		  try{
 			bat "load_transaction.bat"
 			def logCust = readFile "${env.WORKSPACE}/load_transaction_error.txt"
 		if(logCust == '')
 					echo " No Error log generated for script Load Account"
 		else
 					throw err				
-			
+			}
 		catch(err){
 			echo "Error exists in  Git load_data_account Script, Marking build as unstable"
 			currentBuild.result = "UNSTABLE"
