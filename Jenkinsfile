@@ -19,7 +19,7 @@ node {
 					throw err				
 			}
 		catch(err){
-			echo "Error exists in  Git load_data_customer Script, Marking build as unstable"
+			echo "Error log generated for load_data_customer Script, Marking build as unstable"
 			currentBuild.result = "UNSTABLE"
 					   }
         
@@ -34,7 +34,7 @@ node {
 					throw err				
 			}
 		catch(err){
-			echo "Error exists in  Git load_data_account Script, Marking build as unstable"
+			echo "Error log generated for load_data_account Script, Marking build as unstable"
 			currentBuild.result = "UNSTABLE"
 					   }          
         }
@@ -48,7 +48,7 @@ node {
 					throw err				
 			}
 		catch(err){
-			echo "Error exists in  Git load_data_account Script, Marking build as unstable"
+			echo "Error log generated for load_data_account Script, Marking build as unstable"
 			currentBuild.result = "UNSTABLE"
 					   }
 }					   
