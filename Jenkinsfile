@@ -2,31 +2,52 @@ node {
     // Clean workspace before doing anything
     try {
 	   stage ('Clone') {
-            checkout scm
-            
-        }
+            checkout scm           
+             }
         stage ('Loading Customer Data') {
 	   try {        
-			
-		
-			bat "test.bat"
-			
+				
+			bat "load_customer.bat"
+			def logCust = readFile "${env.WORKSPACE}/load_customer_error.txt
+			if(logCust == '')
+					echo " No Error log generated for script Load Customer"
+			else
+					throw err				
 			}
 		catch(err){
-			echo "Error exists in  Git load_Data_Customer Script, Marking build as unstable"
+			echo "Error exists in  Git load_data_customer Script, Marking build as unstable"
 			currentBuild.result = "UNSTABLE"
 					   }
         
         }
-       stage ('Tests') {	
-	  
-            
+       stage ('Loading Account Data') {	
+	   
+			bat "load_account.bat"
+			def logCust = readFile "${env.WORKSPACE}/load_account_error.txt
+			if(logCust == '')
+					echo " No Error log generated for script Load Account"
+			else
+					throw err				
+			
+		catch(err){
+			echo "Error exists in  Git load_data_account Script, Marking build as unstable"
+			currentBuild.result = "UNSTABLE"
+					   }          
         }
-        stage ('Deploy') {
-            //update dashboard
-             bat "echo 'will update dashbaord...'"
-			 echo "test1"
-        }
+        stage ('Loading Transaction Data') {
+			bat "load_transaction.bat"
+			def logCust = readFile "${env.WORKSPACE}/load_transaction_error.txt
+		if(logCust == '')
+					echo " No Error log generated for script Load Account"
+		else
+					throw err				
+			
+		catch(err){
+			echo "Error exists in  Git load_data_account Script, Marking build as unstable"
+			currentBuild.result = "UNSTABLE"
+					   }
+}					   
+        
     } catch (err) {
         currentBuild.result = 'FAILED'
         throw err
