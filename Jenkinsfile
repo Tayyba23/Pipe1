@@ -10,6 +10,7 @@ node {
 				
 			bat "load_customer.bat"
 			def logCust = readFile "${env.WORKSPACE}/load_customer_error.txt"
+			echo logCust
 			if(logCust == "0")
 					echo " No Error log generated for script Load Customer"
 			else
