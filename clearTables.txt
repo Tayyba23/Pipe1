@@ -1,0 +1,5 @@
+.LOGON 192.168.74.134/dbc,dbc; 
+  delete from GDEV1T_STG.TRANS_;
+  delete from GDEV1T_STG.Cust_;
+  delete from GDEV1T_STG.accs;
+.LOGOFF

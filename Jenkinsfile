@@ -2,14 +2,15 @@ node {
     // Clean workspace before doing anything
     try {
 	   stage ('Clone') {
-            checkout scm           
+            checkout scm      
+			bat "bteq <clearTables.txt>  table_clear_Log.txt"
              }
         stage ('Loading Customer Data') {
 	   try {        
 				
 			bat "load_customer.bat"
 			def logCust = readFile "${env.WORKSPACE}/load_customer_error.txt"
-			if(logCust == '')
+			if(logCust == '0')
 					echo " No Error log generated for script Load Customer"
 			else
 					throw err				
@@ -24,7 +25,7 @@ node {
 	   try{
 			bat "load_account.bat"
 			def logCust = readFile "${env.WORKSPACE}/load_account_error.txt"
-			if(logCust == '')
+			if(logCust == '0')
 					echo " No Error log generated for script Load Account"
 			else
 					throw err				
@@ -38,7 +39,7 @@ node {
 		  try{
 			bat "load_transaction.bat"
 			def logCust = readFile "${env.WORKSPACE}/load_transaction_error.txt"
-		if(logCust == '')
+		if(logCust == '0')
 					echo " No Error log generated for script Load Account"
 		else
 					throw err				
