@@ -24,12 +24,12 @@ node {
 					   }
         
         }
-       stage ('Loading Account Data') {	
+       stage ('Loading Accounts Data from first file') {	
 	   try{
 			bat "load_account.bat"
 			def logCust = readFile "${env.WORKSPACE}/load_account_error.txt"
 			if(logCust.contains('0'))
-					echo " No Error log generated for script Load Account"
+					echo " No Error log generated for script Load Account Source 1"
 			else
 					throw err				
 			}
@@ -38,6 +38,22 @@ node {
 			currentBuild.result = "UNSTABLE"
 					   }          
         }
+		
+		   stage ('Loading Accounts Data from second file') {	
+	   try{
+			bat "load_account_second.bat"
+			def logCust = readFile "${env.WORKSPACE}/load_account_2_error.txt"
+			if(logCust.contains('0'))
+					echo " No Error log generated for script Load Account Source 2"
+			else
+					throw err				
+			}
+		catch(err){
+			echo "Error log generated for load_data_account Script, Marking build as unstable"
+			currentBuild.result = "UNSTABLE"
+					   }          
+        }
+		
         stage ('Loading Transaction Data') {
 		  try{
 			bat "load_transaction.bat"
