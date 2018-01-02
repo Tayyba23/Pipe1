@@ -45,11 +45,11 @@ DESCRIPTION 'Loading from file into staging table account_stg2'
 		VARCHAR UserName = 'dbc', 
 		VARCHAR UserPassword = 'dbc',
 		VARCHAR Tdpid = '192.168.74.134',
-		VARCHAR	TargetTable = 'GDEV1T_STG.accs_stg2',
+		VARCHAR	TargetTable = 'GDEV1T_STG.accs_src2',
 		VARCHAR LogTable = 'GDEV1T_STG.accs_log_',
 		VARCHAR DateForm='AnsiDate'
 	);
-	APPLY 'INSERT INTO GDEV1T_STG.accs_stg2  (Acct_Nbr, Cust_Id, Acct_Type, Account_Active, Acct_Start_Date, Acct_End_Date, Starting_Balance, Ending_Balance, Start_Ts, End_Ts, Start_Date, End_Date, Record_Deleted_Flag, Ctl_Id, File_Id, Process_Name, Process_Id, Update_Process_Name, Update_Process_Id)  VALUES (:Acct_Nbr,:Cust_Id,:Acct_Type,:Account_Active,:Acct_Start_Date,:Acct_End_Date,:Starting_Balance,:Ending_Balance,:Start_Ts,:End_Ts,:Start_Date,:End_Date,:Record_Deleted_Flag,:Ctl_Id,:File_Id,:Process_Name,:Process_Id,:Update_Process_Name,:Update_Process_Id);'
+	APPLY 'INSERT INTO GDEV1T_STG.accs_src2  (Acct_Nbr, Cust_Id, Acct_Type, Account_Active, Acct_Start_Date, Acct_End_Date, Starting_Balance, Ending_Balance, Start_Ts, End_Ts, Start_Date, End_Date, Record_Deleted_Flag, Ctl_Id, File_Id, Process_Name, Process_Id, Update_Process_Name, Update_Process_Id)  VALUES (:Acct_Nbr,:Cust_Id,:Acct_Type,:Account_Active,:Acct_Start_Date,:Acct_End_Date,:Starting_Balance,:Ending_Balance,:Start_Ts,:End_Ts,:Start_Date,:End_Date,:Record_Deleted_Flag,:Ctl_Id,:File_Id,:Process_Name,:Process_Id,:Update_Process_Name,:Update_Process_Id);'
 	TO OPERATOR (Load_accts[1])
 	
 	SELECT  Acct_Nbr, Cust_Id, Acct_Type, Account_Active, Acct_Start_Date, Acct_End_Date, Starting_Balance, Ending_Balance, Start_Ts, End_Ts, Start_Date, End_Date, Record_Deleted_Flag, Ctl_Id, File_Id, Process_Name, Process_Id, Update_Process_Name, Update_Process_Id
