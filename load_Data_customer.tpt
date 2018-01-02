@@ -38,7 +38,7 @@ DESCRIPTION 'Loading from file into staging table customer'
 	ATTRIBUTES
 	(
 		VARCHAR DirectoryPath = '.',
-		VARCHAR FileName = 'customer.csv',
+		VARCHAR FileName = 'customers.csv',
 		VARCHAR FORMAT = 'DELIMITED',
 		VARCHAR TextDelimiter = ',',
 		VARCHAR OpenMode = 'READ'
